@@ -8,4 +8,4 @@ run: train.exe
 	@./train.exe
 
 clean:
-	rm -f ./train
+	rm -f ./train.exe
