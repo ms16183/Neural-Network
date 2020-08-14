@@ -1,7 +1,5 @@
+#include "def.hpp"
 #include "activation.hpp"
-#include <random>
-#include <iostream>
-#include <algorithm>
 
 double identity(double x){
   return x;

@@ -1,47 +1,12 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
-#include <iomanip>
-#include <random>
-#include <string>
+#include "def.hpp"
+#include "mnist.hpp"
 #include "activation.hpp"
+#include "error.hpp"
 
 using namespace std;
 
-// ファイルパス
-const string TRAIN_IMAGE_PATH = "./mnist/train-images.idx3-ubyte";
-const string TRAIN_LABEL_PATH = "./mnist/train-labels.idx1-ubyte";
-const string ERROR_DATA_PATH = "./out/error_data.csv";
-
-// MNISTの画像サイズ，画像の枚数，画像の使用枚数
-const int IMG_WIDTH = 28;
-const int IMG_HEIGHT = 28;
-const int DATA_MAX_NUM = 60000;
-const int DATA_NUM = 1000;
-
-// MNIST構造体
-typedef struct mnist_data {
-	double image[IMG_WIDTH][IMG_HEIGHT]; // 28x28 の画素値
-	unsigned int label;                  // 0~9のラベル
-} mnist_data;
-
 // 画像データ(0~1に正規化された浮動小数点型)
 mnist_data train_data[DATA_MAX_NUM];
-
-// エポック数
-const int EPOCHS = 512;
-
-// 学習率
-const double LEARNING_RATE = 0.001;
-
-// 近似による誤差ε
-const double EPS = 0.001;
-
-// 各層の数
-const int INPUT_NEURONS = IMG_HEIGHT * IMG_WIDTH;
-const int HIDDEN_NEURONS = 100;
-const int OUTPUT_NEURONS = 10;
 
 // 入力層から隠れ層への重み，入力層の出力
 double *w1[INPUT_NEURONS];
@@ -66,100 +31,9 @@ ifstream image;
 ifstream label;
 ofstream report;
 
-// MNISTのデータをint型に変換する．
-static unsigned int mnist_bin_to_int(char *v){
-	unsigned int ret = 0;
-	for (int i = 0; i < 4; i++) {
-		ret <<= 8;
-		ret |= (unsigned char)v[i];
-	}
-	return ret;
-}
-
-// MNIST画像を読みこむ．
-// 訓練/テスト画像ファイル，訓練/テストラベルファイル，MNIST構造体のポインタ
-int load_mnist(const string image_filename, const string label_filename, mnist_data *data){
-	char tmp[4];
-
-	unsigned int image_cnt, label_cnt;
-	unsigned int image_dim[2];
-
-	FILE *ifp = fopen(image_filename.c_str(), "rb");
-	FILE *lfp = fopen(label_filename.c_str(), "rb");
-
-  // ファイル場所チェック
-	if (!ifp) {
-    fprintf(stderr, "%s not found.\n", image_filename);
-    return -1;
-	}
-
-	if (!lfp) {
-    fprintf(stderr, "%s not found.\n", label_filename);
-    return -1;
-	}
-
-  // ファイルチェック
-	fread(tmp, 1, 4, ifp);
-	if (mnist_bin_to_int(tmp) != 2051) {
-    fprintf(stderr, "%s not valid fi.e.\n", image_filename);
-    return -1;
-	}
-
-	fread(tmp, 1, 4, lfp);
-	if (mnist_bin_to_int(tmp) != 2049) {
-    fprintf(stderr, "%s not valid fi.e.\n", label_filename);
-    return -1;
-	}
-
-	fread(tmp, 1, 4, ifp);
-	image_cnt = mnist_bin_to_int(tmp);
-
-	fread(tmp, 1, 4, lfp);
-	label_cnt = mnist_bin_to_int(tmp);
-
-  // 画像とラベルのカウントが同じになるかチェック
-	if (image_cnt != label_cnt) {
-		fprintf(stderr, "The number of images does not match the number of labels.\n");
-	}
-
-	for (int i = 0; i < 2; i++) {
-		fread(tmp, 1, 4, ifp);
-		image_dim[i] = mnist_bin_to_int(tmp);
-	}
-
-	if (image_dim[0] != IMG_WIDTH || image_dim[1] != IMG_HEIGHT) {
-    return -1;
-	}
-
-	for (int i = 0; i < image_cnt; i++) {
-		unsigned char read_data[IMG_WIDTH*IMG_HEIGHT];
-
-		fread(read_data, 1, IMG_WIDTH*IMG_HEIGHT, ifp);
-
-		for (int j = 0; j < IMG_WIDTH*IMG_HEIGHT; j++) {
-      // 正規化する．
-			data[i].image[j/28][j%28] = read_data[j] / 255.0;
-		}
-
-		fread(tmp, 1, 1, lfp);
-    data[i].label = tmp[0];
-	}
-
-	return 0;
-}
-
-// L2 Norm損失関数(二乗和誤差)
-double square_error(){
-  double sum = 0.0;
-  for(int i = 0; i < OUTPUT_NEURONS; i++){
-    sum += pow(out3[i] - expected[i], 2.0);
-  }
-  return sum / 2.0;
-}
-
 // 行を動的生成する．
 void init_array(){
-  
+
   // 入力層
   for(int i = 0; i < INPUT_NEURONS; i++){
     w1[i] = new double [HIDDEN_NEURONS];
@@ -318,7 +192,7 @@ int learning(){
     forward();
     backward();
     // 許容範囲ならこのエポックを返す．
-    if(square_error() < EPS){
+    if(square_error(out3, expected, 0, OUTPUT_NEURONS) < EPS){
       return i;
     }
   }
@@ -358,7 +232,7 @@ int main(int argc, char **argv){
     for(int x = 0; x < OUTPUT_NEURONS; x++)
       expected[x] = 0.0;
     expected[train_data[i].label] = 1.0;
-    
+
     for(int h = 0; h < IMG_HEIGHT; h++){
       for(int w = 0; w < IMG_WIDTH; w++){
         // グレースケール化
@@ -367,7 +241,7 @@ int main(int argc, char **argv){
     }
     // 学習，誤差計算
     double learning_iteration = learning();
-    double error = square_error();
+    double error = square_error(out3, expected, 0, OUTPUT_NEURONS);
 
     // 学習状況を100枚学習ごとに出力する．
     if(i % 100 == 0){
@@ -381,7 +255,7 @@ int main(int argc, char **argv){
     // 損失関数の値はファイルに書き込みする．
     of << error << endl;
   }
-  
+
   // TODO: 学習した重みを外部出力する．
 
   // リソースの解放
