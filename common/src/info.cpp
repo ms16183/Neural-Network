@@ -1,4 +1,4 @@
-#include "def.hpp"
+#include "../inc/def.hpp"
 
 // 各種情報の出力
 void info(){

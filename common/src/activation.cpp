@@ -1,5 +1,5 @@
-#include "def.hpp"
-#include "activation.hpp"
+#include "../inc/def.hpp"
+#include "../inc/activation.hpp"
 
 double identity(double x){
   return x;

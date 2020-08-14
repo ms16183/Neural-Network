@@ -1,5 +1,5 @@
-#include "def.hpp"
-#include "mnist.hpp"
+#include "../inc/def.hpp"
+#include "../inc/mnist.hpp"
 
 using namespace std;
 

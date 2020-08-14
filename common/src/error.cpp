@@ -1,5 +1,5 @@
-#include "def.hpp"
-#include "error.hpp"
+#include "../inc/def.hpp"
+#include "../inc/error.hpp"
 
 // L2 Norm損失関数(二乗和誤差)
 double square_error(double *a, double *b, int begin, int end){
