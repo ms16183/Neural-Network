@@ -246,7 +246,7 @@ int main(int argc, char **argv){
     }
 
     // 学習，誤差計算
-    double learning_iteration = learning();
+    int learning_iteration = learning();
     double error = square_error(out3, expected, 0, OUTPUT_NEURONS);
 
     // 学習状況を100枚学習ごとに出力する．
