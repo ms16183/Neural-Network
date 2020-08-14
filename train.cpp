@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <random>
 #include <string>
+#include "activation.hpp"
 
 using namespace std;
 
@@ -13,10 +14,11 @@ const string TRAIN_IMAGE_PATH = "./mnist/train-images.idx3-ubyte";
 const string TRAIN_LABEL_PATH = "./mnist/train-labels.idx1-ubyte";
 const string ERROR_DATA_PATH = "./out/error_data.csv";
 
-// 画像サイズ，画像の枚数
+// MNISTの画像サイズ，画像の枚数，画像の使用枚数
 const int IMG_WIDTH = 28;
 const int IMG_HEIGHT = 28;
-const int DATA_NUM = 60000;
+const int DATA_MAX_NUM = 60000;
+const int DATA_NUM = 1000;
 
 // MNIST構造体
 typedef struct mnist_data {
@@ -25,7 +27,7 @@ typedef struct mnist_data {
 } mnist_data;
 
 // 画像データ(0~1に正規化された浮動小数点型)
-mnist_data train_data[DATA_NUM];
+mnist_data train_data[DATA_MAX_NUM];
 
 // エポック数
 const int EPOCHS = 512;
@@ -144,16 +146,6 @@ int load_mnist(const string image_filename, const string label_filename, mnist_d
 	}
 
 	return 0;
-}
-
-// Sigmoid関数
-double sigmoid(double x){
-  return 1.0 / (1.0+exp(-x));
-}
-
-// ReLU関数
-double ReLU(double x){
-  return x > 0.0 ? x : 0.0;
 }
 
 // L2 Norm損失関数(二乗和誤差)
@@ -341,7 +333,7 @@ int main(int argc, char **argv){
   cout << endl;
   cout << "Training images: " << TRAIN_IMAGE_PATH << endl;
   cout << "Training Labels: " << TRAIN_LABEL_PATH << endl;
-  cout << "Training Data: " << IMG_WIDTH << "x" << IMG_HEIGHT << ", " << DATA_NUM << endl;
+  cout << "Training Data: " << IMG_WIDTH << "x" << IMG_HEIGHT << ", " << DATA_NUM << "/" << DATA_MAX_NUM << endl;
   cout << endl;
   cout << "Input neurons: " << INPUT_NEURONS << endl;
   cout << "Hidden neurons: " << HIDDEN_NEURONS << endl;
@@ -377,12 +369,15 @@ int main(int argc, char **argv){
     double learning_iteration = learning();
     double error = square_error();
 
-    // 学習状況を出力する．
-    cout << fixed << setprecision(10);
-    cout << "Sample: " << i+1 << endl;
-    cout << "  Label: " << train_data[i].label << endl;
-    cout << "  Iteration: " << learning_iteration << endl;
-    cout << "  Error: " << error << endl;
+    // 学習状況を100枚学習ごとに出力する．
+    if(i % 100 == 0){
+      cout << fixed << setprecision(10);
+      cout << "Sample: " << i+1 << endl;
+      cout << "  Label: " << train_data[i].label << endl;
+      cout << "  Iteration: " << learning_iteration << endl;
+      cout << "  Error: " << error << endl;
+      cout << endl;
+    }
     // 損失関数の値はファイルに書き込みする．
     of << error << endl;
   }
