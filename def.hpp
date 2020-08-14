@@ -45,4 +45,12 @@ const int INPUT_NEURONS = IMG_HEIGHT * IMG_WIDTH;
 const int HIDDEN_NEURONS = 100;
 const int OUTPUT_NEURONS = 10;
 
+// プログラム情報
+const string title = "Neural Network";
+const string copyright = "";
+const string license = "";
+const string message = "";
+
+void info();
+
 #endif /* _DEF_HPP_ */

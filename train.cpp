@@ -8,28 +8,25 @@ using namespace std;
 // 画像データ(0~1に正規化された浮動小数点型)
 mnist_data train_data[DATA_MAX_NUM];
 
-// 入力層から隠れ層への重み，入力層の出力
+// 入力層から隠れ層への重み，入力層の出力，勾配
 double *w1[INPUT_NEURONS];
 double *delta1[INPUT_NEURONS];
 double *out1;
 
-// 隠れ層から出力層への重み，隠れ層の入出力
+// 隠れ層から出力層への重み，隠れ層の入出力，勾配，バイアス
 double *w2[INPUT_NEURONS];
 double *delta2[INPUT_NEURONS];
 double *in2;
 double *out2;
 double *theta2;
 
-// 出力層の入出力
+// 出力層の入出力，バイアス
 double *in3;
 double *out3;
 double *theta3;
-double expected[OUTPUT_NEURONS];
 
-// 出力データ
-ifstream image;
-ifstream label;
-ofstream report;
+// 正解ラベル
+double expected[OUTPUT_NEURONS];
 
 // 行を動的生成する．
 void init_array(){
@@ -142,6 +139,7 @@ void forward(){
 }
 
 // バックプロパゲーションによる逆伝播
+// sigmoid関数を想定
 void backward(){
   double sum = 0.0;
   for(int i = 0; i < OUTPUT_NEURONS; i++){
@@ -205,20 +203,8 @@ int main(int argc, char **argv){
   // 開始時間計測
   auto program_begin_time = chrono::system_clock::now();
 
-  // 各種情報
-  cout << "Neural Network" << endl;
-  cout << endl;
-  cout << "Training images: " << TRAIN_IMAGE_PATH << endl;
-  cout << "Training Labels: " << TRAIN_LABEL_PATH << endl;
-  cout << "Training Data: " << IMG_WIDTH << "x" << IMG_HEIGHT << ", " << DATA_NUM << "/" << DATA_MAX_NUM << endl;
-  cout << endl;
-  cout << "Input neurons: " << INPUT_NEURONS << endl;
-  cout << "Hidden neurons: " << HIDDEN_NEURONS << endl;
-  cout << "Output neurons: " << OUTPUT_NEURONS << endl;
-  cout << endl;
-  cout << "Epochs: " << EPOCHS << endl;
-  cout << "Learning rate: " << LEARNING_RATE << endl;
-  cout << endl;
+  // 各種情報を表示
+  info();
 
   // 初期化
   init_array();
@@ -231,8 +217,6 @@ int main(int argc, char **argv){
 
   // 学習
   for(int i = 0; i < DATA_NUM; i++){
-
-    // HACK: MNIST構造体が必要無い書き方なので修正する必要がある．
 
     // データ読み込み
     mnist_one_hot(&train_data[i], expected);
