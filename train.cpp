@@ -235,15 +235,8 @@ int main(int argc, char **argv){
     // HACK: MNIST構造体が必要無い書き方なので修正する必要がある．
 
     // データ読み込み
-    for(int x = 0; x < OUTPUT_NEURONS; x++)
-      expected[x] = 0.0;
-    expected[train_data[i].label] = 1.0;
-    for(int h = 0; h < IMG_HEIGHT; h++){
-      for(int w = 0; w < IMG_WIDTH; w++){
-        // グレースケール化
-        out1[IMG_WIDTH*h+w] = train_data[i].image[h][w] > 0.5 ? 1.0 : 0.0;
-      }
-    }
+    mnist_one_hot(&train_data[i], expected);
+    mnist_flatten(&train_data[i], out1);
 
     // 学習，誤差計算
     int learning_iteration = learning();

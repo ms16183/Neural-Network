@@ -7,8 +7,8 @@ typedef struct mnist_data {
 	unsigned int label;                  // 0~9のラベル
 } mnist_data;
 
-// MNIST画像を読みこむ．
-// 訓練/テスト画像ファイル，訓練/テストラベルファイル，MNIST構造体のポインタ
 int load_mnist(const string image_filename, const string label_filename, mnist_data *data);
+void mnist_one_hot(mnist_data *data, double *arr);
+void mnist_flatten(mnist_data *data, double *arr);
 
 #endif /* _MNIST_HPP_ */

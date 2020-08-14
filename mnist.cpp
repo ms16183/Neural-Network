@@ -75,7 +75,7 @@ int load_mnist(const string image_filename, const string label_filename, mnist_d
 
 		for (int j = 0; j < IMG_WIDTH*IMG_HEIGHT; j++) {
       // 正規化する．
-			data[i].image[j/28][j%28] = read_data[j] / 255.0;
+			data[i].image[j/IMG_WIDTH][j%IMG_HEIGHT] = read_data[j] / 255.0;
 		}
 
 		fread(tmp, 1, 1, lfp);
@@ -83,5 +83,25 @@ int load_mnist(const string image_filename, const string label_filename, mnist_d
 	}
 
 	return 0;
+}
+
+// MNISTのラベルをone hot表現にする．
+void mnist_one_hot(mnist_data *data, double *arr){
+
+  for(int i = 0; i < 10; i++)
+    arr[i] = 0.0;
+  arr[data->label] = 1.0;
+  return;
+}
+
+// MNIST構造体の画素値を1次元配列にする．
+void mnist_flatten(mnist_data *data, double *arr){
+
+  for(int h = 0; h < IMG_HEIGHT; h++){
+    for(int w = 0; w < IMG_WIDTH; w++){
+      arr[IMG_WIDTH*h+w] = data->image[h][w];
+    }
+  }
+  return;
 }
 
