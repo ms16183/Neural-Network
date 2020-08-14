@@ -52,21 +52,18 @@ void init_array(){
   out3 = new double[OUTPUT_NEURONS];
   theta3 = new double[OUTPUT_NEURONS];
 
-  // 重みを乱数で初期化する．
+  // Heの初期値を用いて重みを初期化する．
   mt19937 mt(random_device{}());
-  uniform_real_distribution<double> dist1(-0.2, 0.2);
-  uniform_real_distribution<double> dist2(1.0, 10.0);
+  normal_distribution<double> dist(0.0, 1.0);
 
-  // -0.2~0.2
   for(int i = 0; i < INPUT_NEURONS; i++){
     for(int j = 0; j < HIDDEN_NEURONS; j++){
-      w1[i][j] = dist1(mt);
+      w1[i][j] = dist(mt) * sqrt(2.0/INPUT_NEURONS);
     }
   }
-  // -10.0~-1.0 or 1.0~10.0
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     for(int j = 0; j < OUTPUT_NEURONS; j++){
-      w2[i][j] = (mt()%2?1.0:-1.0) * dist2(mt) / (10.0 * OUTPUT_NEURONS);
+      w2[i][j] = dist(mt) * sqrt(2.0/HIDDEN_NEURONS);
     }
   }
   return;
@@ -141,29 +138,29 @@ void forward(){
 // バックプロパゲーションによる逆伝播
 // sigmoid関数を想定
 void backward(){
-  double sum = 0.0;
   for(int i = 0; i < OUTPUT_NEURONS; i++){
-    theta3[i] = out3[i] * (1.0 - out3[i]) * (expected[i] - out3[i]);
+    theta3[i] = (expected[i] - out3[i]) * out3[i] * (1.0 - out3[i]);
   }
 
+  double dot = 0.0;
   for(int i = 0; i < HIDDEN_NEURONS; i++){
-    sum = 0.0;
+    dot = 0.0;
     for(int j = 0; j < OUTPUT_NEURONS; j++){
-      sum += w2[i][j] * theta3[j];
+      dot += w2[i][j] * theta3[j];
     }
-    theta2[i] = out2[i] * (1.0 - out2[i]) * sum;
+    theta2[i] = dot * out2[i] * (1.0 - out2[i]);
   }
 
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     for(int j = 0; j < OUTPUT_NEURONS; j++){
-      delta2[i][j] = LEARNING_RATE*(theta3[j]*out2[i]);
+      delta2[i][j] = LEARNING_RATE*theta3[j]*out2[i] + MOMENTUM*delta2[i][j];
       w2[i][j] += delta2[i][j];
     }
   }
 
   for(int i = 0; i < INPUT_NEURONS; i++){
     for(int j = 0; j < HIDDEN_NEURONS; j++){
-      delta1[i][j] = LEARNING_RATE*(theta2[j]*out1[i]);
+      delta1[i][j] = LEARNING_RATE*theta2[j]*out1[i] + MOMENTUM*delta1[i][j];
       w1[i][j] += delta1[i][j];
     }
   }
@@ -208,7 +205,10 @@ int main(int argc, char **argv){
 
   // 初期化
   init_array();
-  load_mnist(TRAIN_IMAGE_PATH, TRAIN_LABEL_PATH, train_data);
+  if(load_mnist(TRAIN_IMAGE_PATH, TRAIN_LABEL_PATH, train_data) > 0){
+    cout << "load_mnist error" << endl;
+    return -1;
+  }
 
   // 損失関数書き込み
   ofstream of_error(ERROR_DATA_PATH);
@@ -238,7 +238,6 @@ int main(int argc, char **argv){
 
     // 損失関数の値をファイルに書き込みする．
     of_error << error << endl;
-
   }
 
   // 重みの値をファイルに書き込みする．
