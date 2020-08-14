@@ -202,6 +202,9 @@ int learning(){
 // エントリポイント
 int main(int argc, char **argv){
 
+  // 開始時間計測
+  auto program_begin_time = chrono::system_clock::now();
+
   // 各種情報
   cout << "Neural Network" << endl;
   cout << endl;
@@ -215,13 +218,16 @@ int main(int argc, char **argv){
   cout << endl;
   cout << "Epochs: " << EPOCHS << endl;
   cout << "Learning rate: " << LEARNING_RATE << endl;
+  cout << endl;
 
   // 初期化
   init_array();
   load_mnist(TRAIN_IMAGE_PATH, TRAIN_LABEL_PATH, train_data);
 
   // 損失関数書き込み
-  ofstream of(ERROR_DATA_PATH);
+  ofstream of_error(ERROR_DATA_PATH);
+  // 重み書き込み
+  ofstream of_weight(WEIGHT_DATA_PATH);
 
   // 学習
   for(int i = 0; i < DATA_NUM; i++){
@@ -232,19 +238,19 @@ int main(int argc, char **argv){
     for(int x = 0; x < OUTPUT_NEURONS; x++)
       expected[x] = 0.0;
     expected[train_data[i].label] = 1.0;
-
     for(int h = 0; h < IMG_HEIGHT; h++){
       for(int w = 0; w < IMG_WIDTH; w++){
         // グレースケール化
         out1[IMG_WIDTH*h+w] = train_data[i].image[h][w] > 0.5 ? 1.0 : 0.0;
       }
     }
+
     // 学習，誤差計算
     double learning_iteration = learning();
     double error = square_error(out3, expected, 0, OUTPUT_NEURONS);
 
     // 学習状況を100枚学習ごとに出力する．
-    if(i % 100 == 0){
+    if((i+1) % 100 == 0){
       cout << fixed << setprecision(10);
       cout << "Sample: " << i+1 << endl;
       cout << "  Label: " << train_data[i].label << endl;
@@ -252,15 +258,34 @@ int main(int argc, char **argv){
       cout << "  Error: " << error << endl;
       cout << endl;
     }
-    // 損失関数の値はファイルに書き込みする．
-    of << error << endl;
+
+    // 損失関数の値をファイルに書き込みする．
+    of_error << error << endl;
+
   }
 
-  // TODO: 学習した重みを外部出力する．
+  // 重みの値をファイルに書き込みする．
+  for(int wi = 0; wi < INPUT_NEURONS; wi++){
+    for(int wj = 0; wj < HIDDEN_NEURONS; wj++){
+      of_weight << w1[wi][wj] << " ";
+    }
+    of_weight << endl;
+  }
+  for(int wi = 0; wi < HIDDEN_NEURONS; wi++){
+    for(int wj = 0; wj < OUTPUT_NEURONS; wj++){
+      of_weight << w2[wi][wj] << " ";
+    }
+    of_weight << endl;
+  }
 
   // リソースの解放
   release_array();
-  of.close();
+  of_error.close();
+  of_weight.close();
+
+  // 処理時間表示
+  auto program_end_time = chrono::system_clock::now();
+  cout << chrono::duration_cast<chrono::seconds>(program_end_time - program_begin_time).count() << "[sec]" << endl;
 
   return 0;
 }
