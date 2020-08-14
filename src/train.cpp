@@ -139,7 +139,7 @@ void forward(){
 // sigmoid関数を想定
 void backward(){
   for(int i = 0; i < OUTPUT_NEURONS; i++){
-    theta3[i] = (expected[i] - out3[i]) * out3[i] * (1.0 - out3[i]);
+    theta3[i] = (out3[i] - expected[i]) * out3[i] * (1.0 - out3[i]);
   }
 
   double dot = 0.0;
@@ -154,14 +154,14 @@ void backward(){
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     for(int j = 0; j < OUTPUT_NEURONS; j++){
       delta2[i][j] = LEARNING_RATE*theta3[j]*out2[i] + MOMENTUM*delta2[i][j];
-      w2[i][j] += delta2[i][j];
+      w2[i][j] -= delta2[i][j];
     }
   }
 
   for(int i = 0; i < INPUT_NEURONS; i++){
     for(int j = 0; j < HIDDEN_NEURONS; j++){
       delta1[i][j] = LEARNING_RATE*theta2[j]*out1[i] + MOMENTUM*delta1[i][j];
-      w1[i][j] += delta1[i][j];
+      w1[i][j] -= delta1[i][j];
     }
   }
 
