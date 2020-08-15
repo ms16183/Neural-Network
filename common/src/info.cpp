@@ -3,7 +3,7 @@
 // 各種情報の出力
 void info(){
   cout << title << endl;
-  cout << license << "\t" << copyright << endl;
+  cout << license << endl;
   cout << message << endl;
   cout << "-----------------------------" << endl;
   cout << "Train images: " << TRAIN_IMAGE_PATH << endl;

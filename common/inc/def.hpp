@@ -52,8 +52,7 @@ const int OUTPUT_NEURONS = 10;
 
 // プログラム情報
 const string title = "Neural Network";
-const string copyright = "";
-const string license = "";
+const string license = "Creative Commons Zero v1.0 Universal (CC0)";
 const string message = "";
 
 void info();
