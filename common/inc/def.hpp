@@ -30,6 +30,7 @@ const int IMG_WIDTH = 28;
 const int IMG_HEIGHT = 28;
 const int DATA_MAX_NUM = 60000;
 const int DATA_NUM = DATA_MAX_NUM;
+const int TEST_DATA = 10000;
 
 // エポック数
 const int EPOCHS = 512;
