@@ -33,3 +33,11 @@ double mish(double x){
   return x * tanh(softplus(x));
 }
 
+double softmax(double *xs, int begin, int end, double x){
+  double sum = 0.0;
+  for(int i = begin; i < end; i++){
+    sum += exp(xs[i]);
+  }
+  return exp(x) / sum;
+}
+

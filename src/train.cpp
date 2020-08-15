@@ -52,18 +52,18 @@ void init_array(){
   out3 = new double[OUTPUT_NEURONS];
   theta3 = new double[OUTPUT_NEURONS];
 
-  // Xavierの初期値を用いて重みを初期化する．
+  // Heの初期値を用いて重みを初期化する．
   mt19937 mt(random_device{}());
   normal_distribution<double> dist(0.0, 1.0);
 
   for(int i = 0; i < INPUT_NEURONS; i++){
     for(int j = 0; j < HIDDEN_NEURONS; j++){
-      w1[i][j] = dist(mt) * sqrt(1.0/INPUT_NEURONS);
+      w1[i][j] = dist(mt) * sqrt(2.0/INPUT_NEURONS);
     }
   }
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     for(int j = 0; j < OUTPUT_NEURONS; j++){
-      w2[i][j] = dist(mt) * sqrt(1.0/HIDDEN_NEURONS);
+      w2[i][j] = dist(mt) * sqrt(2.0/HIDDEN_NEURONS);
     }
   }
   return;
@@ -114,7 +114,7 @@ void forward(){
   }
   // 活性化関数
   for(int i = 0; i < HIDDEN_NEURONS; i++){
-    out2[i] = sigmoid(in2[i]);
+    out2[i] = ReLU(in2[i]);
   }
 
   // 隠れ層から出力層へのパーセプトロン
@@ -130,7 +130,7 @@ void forward(){
   }
   // 活性化関数
   for(int i = 0; i < OUTPUT_NEURONS; i++){
-    out3[i] = sigmoid(in3[i]);
+    out3[i] = softmax(in3, 0, OUTPUT_NEURONS, in3[i]);
   }
   return;
 }
@@ -139,7 +139,7 @@ void forward(){
 // sigmoid関数を想定
 void backward(){
   for(int i = 0; i < OUTPUT_NEURONS; i++){
-    theta3[i] = (out3[i] - expected[i]) * out3[i] * (1.0 - out3[i]);
+    theta3[i] = out3[i] - expected[i];
   }
 
   double dot = 0.0;
@@ -148,7 +148,7 @@ void backward(){
     for(int j = 0; j < OUTPUT_NEURONS; j++){
       dot += w2[i][j] * theta3[j];
     }
-    theta2[i] = dot * out2[i] * (1.0 - out2[i]);
+    theta2[i] = dot * (in2[i] > 0.0 ? 1.0 : 0.0);
   }
 
   for(int i = 0; i < HIDDEN_NEURONS; i++){
@@ -187,7 +187,7 @@ int learning(){
     forward();
     backward();
     // 許容範囲ならこのエポックを返す．
-    if(square_error(out3, expected, 0, OUTPUT_NEURONS) < EPS){
+    if(cross_entoropy_error(expected, out3, 0, OUTPUT_NEURONS) < EPS){
       return i;
     }
   }
@@ -224,7 +224,7 @@ int main(int argc, char **argv){
 
     // 学習，誤差計算
     int learning_iteration = learning();
-    double error = square_error(out3, expected, 0, OUTPUT_NEURONS);
+    double error = cross_entoropy_error(expected, out3, 0, OUTPUT_NEURONS);
 
     // 学習状況を100枚学習ごとに出力する．
     if((i+1) % 100 == 0){

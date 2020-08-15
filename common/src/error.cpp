@@ -10,3 +10,13 @@ double square_error(double *a, double *b, int begin, int end){
   return sum / 2.0;
 }
 
+
+// 交差エントロピー損失関数
+double cross_entoropy_error(double *t, double *y, int begin, int end){
+  double sum = 0.0;
+  for(int i = begin; i < end; i++){
+    sum += t[i] * log(y[i]);
+  }
+  return -sum;
+}
+

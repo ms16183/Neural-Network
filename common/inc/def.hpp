@@ -29,7 +29,7 @@ const string WEIGHT_DATA_PATH = "../out/weight_data.csv";
 const int IMG_WIDTH = 28;
 const int IMG_HEIGHT = 28;
 const int DATA_MAX_NUM = 60000;
-const int DATA_NUM = 1000;
+const int DATA_NUM = DATA_MAX_NUM;
 
 // エポック数
 const int EPOCHS = 512;

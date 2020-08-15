@@ -10,4 +10,6 @@ double softplus(double x);
 double swich(double x, double b=1.0);
 double mish(double x);
 
+double softmax(double *xs, int begin, int end, double x);
+
 #endif /* _ACTIVATION_HPP_ */
