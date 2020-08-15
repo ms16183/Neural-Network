@@ -52,18 +52,18 @@ void init_array(){
   out3 = new double[OUTPUT_NEURONS];
   theta3 = new double[OUTPUT_NEURONS];
 
-  // Heの初期値を用いて重みを初期化する．
+  // Xavierの初期値を用いて重みを初期化する．
   mt19937 mt(random_device{}());
   normal_distribution<double> dist(0.0, 1.0);
 
   for(int i = 0; i < INPUT_NEURONS; i++){
     for(int j = 0; j < HIDDEN_NEURONS; j++){
-      w1[i][j] = dist(mt) * sqrt(2.0/INPUT_NEURONS);
+      w1[i][j] = dist(mt) * sqrt(1.0/INPUT_NEURONS);
     }
   }
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     for(int j = 0; j < OUTPUT_NEURONS; j++){
-      w2[i][j] = dist(mt) * sqrt(2.0/HIDDEN_NEURONS);
+      w2[i][j] = dist(mt) * sqrt(1.0/HIDDEN_NEURONS);
     }
   }
   return;
