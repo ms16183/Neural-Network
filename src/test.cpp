@@ -6,7 +6,7 @@
 using namespace std;
 
 // 画像データ(0~1に正規化された浮動小数点型)
-mnist_data test_data[DATA_MAX_NUM];
+mnist_data test_data[TEST_DATA_MAX_NUM];
 
 // 入力層から隠れ層への重み，入力層の出力，勾配
 double *w1[INPUT_NEURONS];
@@ -127,7 +127,7 @@ int test(){
   unsigned int count = 0;
 
   // テスト
-  for(int i = 0; i < TEST_DATA; i++){
+  for(int i = 0; i < TEST_DATA_NUM; i++){
 
     // データ読み込み
     int label = test_data[i].label;
@@ -172,7 +172,7 @@ int main(int argc, char **argv){
   int count = test();
 
   // 正答率
-  double accuracy = 100.0 * count / TEST_DATA;
+  double accuracy = 100.0 * count / TEST_DATA_NUM;
   cout << "Accuracy: " << accuracy << "[%]" << endl;
 
   // リソースの解放

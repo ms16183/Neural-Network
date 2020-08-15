@@ -28,9 +28,10 @@ const string WEIGHT_DATA_PATH = "../out/weight_data.csv";
 // MNISTの画像サイズ，画像の枚数，画像の使用枚数
 const int IMG_WIDTH = 28;
 const int IMG_HEIGHT = 28;
-const int DATA_MAX_NUM = 60000;
-const int DATA_NUM = DATA_MAX_NUM;
-const int TEST_DATA = 10000;
+const int TRAIN_DATA_MAX_NUM = 60000;
+const int TRAIN_DATA_NUM = TRAIN_DATA_MAX_NUM;
+const int TEST_DATA_MAX_NUM = 10000;
+const int TEST_DATA_NUM = TEST_DATA_MAX_NUM;
 
 // エポック数
 const int EPOCHS = 512;
@@ -40,7 +41,8 @@ const double LEARNING_RATE = 0.001;
 
 // モーメンタム
 const double MOMENTUM = 0.9;
-// 近似による誤差ε
+
+// 損失関数の許容値
 const double EPS = 0.001;
 
 // 各層の数

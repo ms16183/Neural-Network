@@ -6,7 +6,7 @@
 using namespace std;
 
 // 画像データ(0~1に正規化された浮動小数点型)
-mnist_data train_data[DATA_MAX_NUM];
+mnist_data train_data[TRAIN_DATA_MAX_NUM];
 
 // 入力層から隠れ層への重み，入力層の出力，勾配
 double *w1[INPUT_NEURONS];
@@ -216,7 +216,7 @@ int main(int argc, char **argv){
   ofstream of_weight(WEIGHT_DATA_PATH);
 
   // 学習
-  for(int i = 0; i < DATA_NUM; i++){
+  for(int i = 0; i < TRAIN_DATA_NUM; i++){
 
     // データ読み込み
     mnist_one_hot(&train_data[i], expected);

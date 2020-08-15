@@ -6,11 +6,13 @@ void info(){
   cout << license << "\t" << copyright << endl;
   cout << message << endl;
   cout << "-----------------------------" << endl;
-  cout << "Trai images: " << TRAIN_IMAGE_PATH << endl;
-  cout << "Trai Labels: " << TRAIN_LABEL_PATH << endl;
+  cout << "Train images: " << TRAIN_IMAGE_PATH << endl;
+  cout << "Train Labels: " << TRAIN_LABEL_PATH << endl;
+  cout << "Train Data: " << IMG_WIDTH << "x" << IMG_HEIGHT << ", " << TRAIN_DATA_NUM << "/" << TRAIN_DATA_MAX_NUM << endl;
+  cout << endl;
   cout << "Test images: " << TEST_IMAGE_PATH << endl;
   cout << "Test Labels: " << TEST_LABEL_PATH << endl;
-  cout << "Data: " << IMG_WIDTH << "x" << IMG_HEIGHT << ", " << DATA_NUM << "/" << DATA_MAX_NUM << endl;
+  cout << "Test Data: " << IMG_WIDTH << "x" << IMG_HEIGHT << ", " << TEST_DATA_NUM << "/" << TEST_DATA_MAX_NUM << endl;
   cout << endl;
   cout << "Input neurons: " << INPUT_NEURONS << endl;
   cout << "Hidden neurons: " << HIDDEN_NEURONS << endl;
