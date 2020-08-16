@@ -19,12 +19,7 @@ Git Bash for WindowsとGNU Make for Windowsを使用した．実行環境に合�
 
 ```
 $ make
-$ cd out
-$ ls
-error_data.csv test.exe train.exe weight_data.csv
-
-$ ./train.exe
-$ ./test.exe
+$ make run
 ```
 
 ## ライセンス
