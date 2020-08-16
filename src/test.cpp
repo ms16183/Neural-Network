@@ -72,9 +72,12 @@ void forward(){
       in2[j] += out1[i] * w1[i][j];
     }
   }
-  // +b, 活性化関数
+  // +b
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     in2[i] += theta2[i];
+  }
+  // 活性化関数
+  for(int i = 0; i < HIDDEN_NEURONS; i++){
     out2[i] = ReLU(in2[i]);
   }
 
@@ -89,9 +92,12 @@ void forward(){
       in3[j] += out2[i] * w2[i][j];
     }
   }
-  // +b, 活性化関数
+  // +b
   for(int i = 0; i < OUTPUT_NEURONS; i++){
     in3[i] += theta3[i];
+  }
+  // 活性化関数
+  for(int i = 0; i < OUTPUT_NEURONS; i++){
     out3[i] = softmax(in3, 0, OUTPUT_NEURONS, in3[i]);
   }
   return;
