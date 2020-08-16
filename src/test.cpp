@@ -9,40 +9,23 @@ using namespace std;
 mnist_data test_data[TEST_DATA_MAX_NUM];
 
 // 入力層から隠れ層への重み，入力層の出力，勾配
-double *w1[INPUT_NEURONS];
-double *out1;
+double w1[INPUT_NEURONS][HIDDEN_NEURONS];
+double out1[INPUT_NEURONS];
 
 // 隠れ層から出力層への重み，隠れ層の入出力，勾配，バイアス
-double *w2[INPUT_NEURONS];
-double *in2;
-double *out2;
+double w2[HIDDEN_NEURONS][OUTPUT_NEURONS];
+double in2[HIDDEN_NEURONS];
+double out2[HIDDEN_NEURONS];
 
 // 出力層の入出力，バイアス
-double *in3;
-double *out3;
+double in3[OUTPUT_NEURONS];
+double out3[OUTPUT_NEURONS];
 
 // 正解ラベル
 double expected[OUTPUT_NEURONS];
 
-// 行を動的生成する．
+// 重みの初期化を行う．
 void init_array(){
-
-  // 入力層
-  for(int i = 0; i < INPUT_NEURONS; i++){
-    w1[i] = new double [HIDDEN_NEURONS];
-  }
-  out1 = new double[INPUT_NEURONS];
-
-  // 隠れ層
-  for(int i = 0; i < HIDDEN_NEURONS; i++){
-    w2[i] = new double [OUTPUT_NEURONS];
-  }
-  in2 = new double[HIDDEN_NEURONS];
-  out2 = new double[HIDDEN_NEURONS];
-
-  // 出力層
-  in3 = new double[OUTPUT_NEURONS];
-  out3 = new double[OUTPUT_NEURONS];
 
   // 重みをロードする．
   ifstream if_weight(WEIGHT_DATA_PATH);
@@ -59,28 +42,6 @@ void init_array(){
   }
 
   if_weight.close();
-  return;
-}
-
-// 動的生成した配列を解放する．
-void release_array(){
-  // 入力層
-  for(int i = 0; i < INPUT_NEURONS; i++){
-    delete[] w1[i];
-  }
-  delete[] out1;
-
-  // 隠れ層
-  for(int i = 0; i < HIDDEN_NEURONS; i++){
-    delete[] w2[i];
-  }
-  delete[] in2;
-  delete[] out2;
-
-  // 出力層
-  delete[] in3;
-  delete[] out3;
-
   return;
 }
 
@@ -174,9 +135,6 @@ int main(int argc, char **argv){
   // 正答率
   double accuracy = 100.0 * count / TEST_DATA_NUM;
   cout << "Accuracy: " << accuracy << "[%]" << endl;
-
-  // リソースの解放
-  release_array();
 
   // 処理時間表示
   auto program_end_time = chrono::system_clock::now();
