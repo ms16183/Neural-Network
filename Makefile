@@ -1,6 +1,6 @@
 # コンパイラの設定
 CC := g++
-FLAGS := -std=c++14 -O2
+FLAGS := -std=c++14 -O3 -funroll-loops
 
 # 訓練プログラムとテストプログラム共通のファイル
 COMMON_INC_FILES := $(wildcard ./inc/*.hpp)
