@@ -121,7 +121,7 @@ int test(){
     // 予想した数値(one hot表現)から正解ラベルを取得．
     int index = 0;
     double max = out3[0];
-    for(int j = 0; j < OUTPUT_NEURONS; j++){
+    for(int j = 1; j < OUTPUT_NEURONS; j++){
       if(max < out3[j]){
         max = out3[j];
         index = j;

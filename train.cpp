@@ -173,7 +173,7 @@ int main(int argc, char **argv){
 
   // 初期化
   init_array();
-  if(load_mnist(TRAIN_IMAGE_PATH, TRAIN_LABEL_PATH, train_data) > 0){
+  if(load_mnist(TRAIN_IMAGE_PATH, TRAIN_LABEL_PATH, train_data) < 0){
     cout << "load_mnist error" << endl;
     return -1;
   }
