@@ -16,15 +16,17 @@ double out1[INPUT_NEURONS];
 double w2[HIDDEN_NEURONS][OUTPUT_NEURONS];
 double in2[HIDDEN_NEURONS];
 double out2[HIDDEN_NEURONS];
+double theta2[HIDDEN_NEURONS];
 
 // 出力層の入出力，バイアス
 double in3[OUTPUT_NEURONS];
 double out3[OUTPUT_NEURONS];
+double theta3[OUTPUT_NEURONS];
 
 // 正解ラベル
 double expected[OUTPUT_NEURONS];
 
-// 重みの初期化を行う．
+// 重みとバイアスの初期化を行う．
 void init_array(){
 
   // 重みをロードする．
@@ -40,8 +42,19 @@ void init_array(){
       if_weight >> w2[i][j];
     }
   }
-
   if_weight.close();
+
+  // バイアスをロードする．
+  ifstream if_bias(BIAS_DATA_PATH);
+
+  for(int i = 0; i < HIDDEN_NEURONS; i++){
+    if_bias >> theta2[i];
+  }
+  for(int i = 0; i < OUTPUT_NEURONS; i++){
+    if_bias >> theta3[i];
+  }
+  if_bias.close();
+
   return;
 }
 
@@ -59,8 +72,9 @@ void forward(){
       in2[j] += out1[i] * w1[i][j];
     }
   }
-  // 活性化関数
+  // +b, 活性化関数
   for(int i = 0; i < HIDDEN_NEURONS; i++){
+    in2[i] += theta2[i];
     out2[i] = ReLU(in2[i]);
   }
 
@@ -75,8 +89,9 @@ void forward(){
       in3[j] += out2[i] * w2[i][j];
     }
   }
-  // 活性化関数
+  // +b, 活性化関数
   for(int i = 0; i < OUTPUT_NEURONS; i++){
+    in3[i] += theta3[i];
     out3[i] = softmax(in3, 0, OUTPUT_NEURONS, in3[i]);
   }
   return;

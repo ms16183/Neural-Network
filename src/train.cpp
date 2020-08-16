@@ -45,6 +45,13 @@ void init_array(){
       w2[i][j] = dist(mt) * sqrt(2.0/HIDDEN_NEURONS);
     }
   }
+  // バイアスは全て0にする．
+  for(int i = 0; i < HIDDEN_NEURONS; i++){
+    theta2[i] = 0.0;
+  }
+  for(int i = 0; i < OUTPUT_NEURONS; i++){
+    theta3[i] = 0.0;
+  }
   return;
 }
 
@@ -65,8 +72,9 @@ void forward(){
       in2[j] += out1[i] * w1[i][j];
     }
   }
-  // 活性化関数
+  // +b, 活性化関数
   for(int i = 0; i < HIDDEN_NEURONS; i++){
+    in2[i] += theta2[i];
     out2[i] = ReLU(in2[i]);
   }
 
@@ -81,8 +89,9 @@ void forward(){
       in3[j] += out2[i] * w2[i][j];
     }
   }
-  // 活性化関数
+  // +b, 活性化関数
   for(int i = 0; i < OUTPUT_NEURONS; i++){
+    in3[i] += theta3[i];
     out3[i] = softmax(in3, 0, OUTPUT_NEURONS, in3[i]);
   }
   return;
@@ -167,6 +176,8 @@ int main(int argc, char **argv){
   ofstream of_error(ERROR_DATA_PATH);
   // 重み書き込み
   ofstream of_weight(WEIGHT_DATA_PATH);
+  // バイアス書き込み
+  ofstream of_bias(BIAS_DATA_PATH);
 
   // 学習
   for(int i = 0; i < TRAIN_DATA_NUM; i++){
@@ -207,9 +218,18 @@ int main(int argc, char **argv){
     of_weight << endl;
   }
 
+  // バイアスをファイルに書き込みする．
+  for(int i = 0; i < HIDDEN_NEURONS; i++){
+    of_bias << theta2[i] << " ";
+  }
+  for(int i = 0; i < OUTPUT_NEURONS; i++){
+    of_bias << theta3[i] << " ";
+  }
+
   // リソースの解放
   of_error.close();
   of_weight.close();
+  of_bias.close();
 
   // 処理時間表示
   auto program_end_time = chrono::system_clock::now();
