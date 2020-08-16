@@ -1,7 +1,7 @@
-#include "../common/inc/def.hpp"
-#include "../common/inc/mnist.hpp"
-#include "../common/inc/activation.hpp"
-#include "../common/inc/error.hpp"
+#include "./inc/def.hpp"
+#include "./inc/mnist.hpp"
+#include "./inc/activation.hpp"
+#include "./inc/error.hpp"
 
 using namespace std;
 

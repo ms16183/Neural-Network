@@ -3,16 +3,16 @@ CC := g++
 FLAGS := -std=c++14 -O2
 
 # 訓練プログラムとテストプログラム共通のファイル
-COMMON_INC_FILES := $(wildcard common/inc/*.hpp)
-COMMON_SRC_FILES := $(wildcard common/src/*.cpp)
+COMMON_INC_FILES := $(wildcard ./inc/*.hpp)
+COMMON_SRC_FILES := $(wildcard ./src/*.cpp)
 
 # 訓練プログラムとテストプログラム
-SRC_TRAIN := src/train.cpp
-SRC_TEST := src/test.cpp
+SRC_TRAIN := ./train.cpp
+SRC_TEST := ./test.cpp
 
 # 出力ファイル名
-TARGET_TRAIN := out/train.exe
-TARGET_TEST := out/test.exe
+TARGET_TRAIN := ./train.exe
+TARGET_TEST := ./test.exe
 
 # プログラムのコンパイル
 all: $(TARGET_TRAIN) $(TARGET_TEST)
