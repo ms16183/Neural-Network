@@ -52,9 +52,9 @@ const int HIDDEN_NEURONS = 128;
 const int OUTPUT_NEURONS = 10;
 
 // プログラム情報
-const string title = "Neural Network";
-const string license = "Creative Commons Zero v1.0 Universal (CC0)";
-const string message = "";
+const string TITLE = "Neural Network";
+const string LICENSE = "Creative Commons Zero v1.0 Universal (CC0)";
+const string MESSAGE = "";
 
 void info();
 

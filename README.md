@@ -22,6 +22,14 @@ $ make
 $ make run
 ```
 
+`make`できない場合，
+
+```
+$ g++ -std=c++14 -Ofast -funroll-loops -mtune=native -march=native -o train.exe src/*.cpp train.cpp
+$ g++ -std=c++14 -Ofast -funroll-loops -mtune=native -march=native -o  test.exe src/*.cpp  test.cpp
+$ ./train.exe && ./test.exe
+```
+
 ## ライセンス
 [![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png "CC0")](http://creativecommons.org/publicdomain/zero/1.0/deed.ja)
 

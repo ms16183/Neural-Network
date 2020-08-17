@@ -2,9 +2,9 @@
 
 // 各種情報の出力
 void info(){
-  cout << title << endl;
-  cout << license << endl;
-  cout << message << endl;
+  cout << TITLE << endl;
+  cout << LICENSE << endl;
+  cout << MESSAGE << endl;
   cout << "-----------------------------" << endl;
   cout << "Train images: " << TRAIN_IMAGE_PATH << endl;
   cout << "Train Labels: " << TRAIN_LABEL_PATH << endl;
