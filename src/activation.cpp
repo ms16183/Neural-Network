@@ -34,10 +34,16 @@ double mish(double x){
 }
 
 double softmax(double *xs, int begin, int end, double x){
+  double max = 0.0;
+  for(int i = begin; i < end; i++){
+    if(max < xs[i])
+      max = xs[i];
+  }
+
   double sum = 0.0;
   for(int i = begin; i < end; i++){
-    sum += exp(xs[i]);
+    sum += exp(xs[i] - max);
   }
-  return exp(x) / sum;
+  return exp(x - max) / sum;
 }
 
