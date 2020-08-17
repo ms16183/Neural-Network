@@ -1,3 +1,9 @@
+/******************************
+ * 3-Layer Neural Network
+ * CC0
+ * test.cpp
+ *******************************/
+
 #include "./inc/def.hpp"
 #include "./inc/mnist.hpp"
 #include "./inc/activation.hpp"
@@ -62,11 +68,11 @@ void init_array(){
 void forward(){
 
   // 入力層から隠れ層へのパーセプトロン
-  // 0埋め
+  // 初期値0
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     in2[i] = 0.0;
   }
-  // X dot W
+  // in dot W
   for(int i = 0; i < INPUT_NEURONS; i++){
     for(int j = 0; j < HIDDEN_NEURONS; j++){
       in2[j] += out1[i] * w1[i][j];
@@ -82,11 +88,11 @@ void forward(){
   }
 
   // 隠れ層から出力層へのパーセプトロン
-  // 0埋め
+  // 初期値0
   for(int i = 0; i < OUTPUT_NEURONS; i++){
     in3[i] = 0.0;
   }
-  // X dot W
+  // hidden dot W
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     for(int j = 0; j < OUTPUT_NEURONS; j++){
       in3[j] += out2[i] * w2[i][j];
@@ -122,6 +128,7 @@ int test(){
     int index = 0;
     double max = out3[0];
     for(int j = 1; j < OUTPUT_NEURONS; j++){
+      // 最も確率の高いラベルを探索する．
       if(max < out3[j]){
         max = out3[j];
         index = j;

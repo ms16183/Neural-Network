@@ -1,3 +1,9 @@
+/******************************
+ * 3-Layer Neural Network
+ * CC0
+ * train.cpp
+ *******************************/
+
 #include "./inc/def.hpp"
 #include "./inc/mnist.hpp"
 #include "./inc/activation.hpp"
@@ -55,18 +61,18 @@ void init_array(){
   return;
 }
 
-// パーセプトロンによる順伝播
+// パーセプトロン
 void forward(){
 
-  // out1 -> in2 -> out2 -> in3 -> out3 <-二乗和誤差による比較-> expected
+  // out1 -> in2 -> out2 -> in3 -> out3 <=交差エントロピーによる比較=> expected
   // ->では入力と重みの掛け算，活性化関数による処理を行う．
 
   // 入力層から隠れ層へのパーセプトロン
-  // 0埋め
+  // 初期値0
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     in2[i] = 0.0;
   }
-  // X dot W
+  // in dot W
   for(int i = 0; i < INPUT_NEURONS; i++){
     for(int j = 0; j < HIDDEN_NEURONS; j++){
       in2[j] += out1[i] * w1[i][j];
@@ -82,11 +88,11 @@ void forward(){
   }
 
   // 隠れ層から出力層へのパーセプトロン
-  // 0埋め
+  // 初期値0
   for(int i = 0; i < OUTPUT_NEURONS; i++){
     in3[i] = 0.0;
   }
-  // X dot W
+  // hidden dot W
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     for(int j = 0; j < OUTPUT_NEURONS; j++){
       in3[j] += out2[i] * w2[i][j];
@@ -103,21 +109,34 @@ void forward(){
   return;
 }
 
-// バックプロパゲーションによる逆伝播
+// バックプロパゲーション
 void backward(){
   for(int i = 0; i < OUTPUT_NEURONS; i++){
+    // softmaxと交差エントロピーの微分の組み合わせ
+    // dL/db_out = out - teacher
     theta3[i] = out3[i] - expected[i];
   }
 
+  // 内積
+  // dL/dhidden = W_out^T dot dL/db_out
   double dot = 0.0;
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     dot = 0.0;
     for(int j = 0; j < OUTPUT_NEURONS; j++){
       dot += w2[i][j] * theta3[j];
     }
+    // ReLU関数の微分
+    // dL/db_hidden = dL/dhidden  (hidden > 0)
+    // dL/db_hidden = 0           (otherwise)
     theta2[i] = dot * (in2[i] > 0.0 ? 1.0 : 0.0);
   }
 
+  // 重み更新
+  // dL/dW_out = dL/db_out dot hidden^T
+  // W_out ← W_out dL/dW_out
+  // ↓ モーメンタムを使用するので式を変形する
+  // v = momentum v - μ dL/DW_out = momentum v - μ dL/db_out dot hidden^T
+  // W_out ← W_out + v
   for(int i = 0; i < HIDDEN_NEURONS; i++){
     for(int j = 0; j < OUTPUT_NEURONS; j++){
       delta2[i][j] = MOMENTUM*delta2[i][j] - LEARNING_RATE*theta3[j]*out2[i];
@@ -125,6 +144,7 @@ void backward(){
     }
   }
 
+  // 重み更新．上と同様
   for(int i = 0; i < INPUT_NEURONS; i++){
     for(int j = 0; j < HIDDEN_NEURONS; j++){
       delta1[i][j] = MOMENTUM*delta1[i][j] - LEARNING_RATE*theta2[j]*out1[i];
@@ -148,12 +168,12 @@ int learning(){
     }
   }
 
-  // エポック毎に学習
+  // エポック単位で学習
   for(int i = 0; i < EPOCHS; i++){
     // 学習
     forward();
     backward();
-    // 許容範囲ならこのエポックを返す．
+    // 損失関数による比較
     if(cross_entoropy_error(expected, out3, 0, OUTPUT_NEURONS) < EPS){
       return i;
     }
