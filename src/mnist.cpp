@@ -18,8 +18,8 @@ static unsigned int mnist_bin_to_int(char *v){
 int load_mnist(const string image_filename, const string label_filename, mnist_data *data){
   char tmp[4];
 
-  unsigned int image_cnt, label_cnt;
-  unsigned int image_dim[2];
+  int image_cnt, label_cnt;
+  int image_dim[2];
 
   FILE *ifp = fopen(image_filename.c_str(), "rb");
   FILE *lfp = fopen(label_filename.c_str(), "rb");
