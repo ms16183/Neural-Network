@@ -26,25 +26,25 @@ int load_mnist(const string image_filename, const string label_filename, mnist_d
 
   // ファイル場所チェック
   if (!ifp) {
-    fprintf(stderr, "%s not found.\n", image_filename);
+    fprintf(stderr, "%s not found.\n", image_filename.c_str());
     return -1;
   }
 
   if (!lfp) {
-    fprintf(stderr, "%s not found.\n", label_filename);
+    fprintf(stderr, "%s not found.\n", label_filename.c_str());
     return -1;
   }
 
   // ファイルチェック
   fread(tmp, 1, 4, ifp);
   if (mnist_bin_to_int(tmp) != 2051) {
-    fprintf(stderr, "%s not valid fi.e.\n", image_filename);
+    fprintf(stderr, "%s not valid fi.e.\n", image_filename.c_str());
     return -1;
   }
 
   fread(tmp, 1, 4, lfp);
   if (mnist_bin_to_int(tmp) != 2049) {
-    fprintf(stderr, "%s not valid fi.e.\n", label_filename);
+    fprintf(stderr, "%s not valid fi.e.\n", label_filename.c_str());
     return -1;
   }
 
